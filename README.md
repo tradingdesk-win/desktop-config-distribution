@@ -5,13 +5,13 @@ This repository hosts the configuration files offered by TradingDesk's optional 
 - [import-data-providers](https://github.com/tradingdesk-win/import-data-providers): trade confirmation templates.
 - [market-data-providers](https://github.com/tradingdesk-win/market-data-providers): market-data and stock-directory configuration.
 
-Only formal `providers/*/template.json` and `providers/*/config.yaml` files are published. Candidates, examples, CSVs, fixtures, full directories, and account API adapters are excluded. Upstream maintainers must review configurations for redistribution and credentials before adding them to `providers/`. The included market provider license is copied from its source repository.
+The catalog takes files from `providers/*/template.json` and `providers/*/config.yaml`. The exclusion list covers the local-only 选股宝 (`xuangubao`) configuration. Upstream maintainers review configurations for redistribution and credentials before adding them to `providers/`. The included market provider license comes from its source repository.
 
 ## Automatic Synchronization
 
 The **Sync provider configurations** GitHub Actions workflow checks both public `main` branches on a 15-minute schedule, or on demand via **Run workflow**. GitHub may delay scheduled runs. It validates the release, keeps files byte-for-byte, and commits only if generated files or handoff state change. No cross-repository token is needed; only the distribution repository is written.
 
-The first release uses the local source directories. While `upstream-pending.json` exists, automatic sync waits for both upstream repositories to publish every recorded provider file with the same content. This prevents older upstream versions from taking down or replacing locally reviewed configurations. If a pending file was edited again before its first upstream push, refresh the local snapshot with the command below. Do not delete the handoff file to bypass review.
+The first release uses the local source directories. `upstream-pending.json` tracks locally published files awaiting the same content upstream. The workflow preserves those files individually and syncs the rest on schedule. If a pending file changes locally again before its first upstream push, refresh the snapshot with the command below.
 
 ```sh
 python -m pip install -r requirements.txt

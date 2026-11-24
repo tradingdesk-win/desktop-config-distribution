@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from sync import collect, sha256, sync
+from sync import build_release, read_sources, sha256, sync
 
 
 class ProviderSyncTest(unittest.TestCase):
@@ -32,16 +32,20 @@ class ProviderSyncTest(unittest.TestCase):
     def test_local_handoff_retains_draft_until_upstream_matches(self):
         path = "providers/sample/config.yaml"
         self.write(self.local["market"], path, self.quote("2"))
-        self.assertTrue(sync(self.release, self.local, False))
+        sync(self.release, self.local, False)
         current = self.release / "v1" / "market-sample-quote.yaml"
         expected = current.read_bytes()
-        self.assertFalse(sync(self.release, self.remote, True))
+        self.write(self.remote["market"], "providers/new/config.yaml", self.quote("1").replace("sample-quote", "new-quote"))
+        sync(self.release, self.remote, True)
         self.assertEqual(current.read_bytes(), expected)
+        self.assertTrue((self.release / "v1" / "market-new-quote.yaml").is_file())
+        pending = json.loads((self.release / "upstream-pending.json").read_bytes())
+        self.assertEqual(list(pending), [f"market/{path}"])
         self.write(self.remote["market"], path, self.quote("2"))
-        self.assertTrue(sync(self.release, self.remote, True))
+        sync(self.release, self.remote, True)
         self.assertFalse((self.release / "upstream-pending.json").exists())
         self.write(self.remote["market"], path, self.quote("3"))
-        self.assertTrue(sync(self.release, self.remote, True))
+        sync(self.release, self.remote, True)
         self.assertNotEqual(current.read_bytes(), expected)
 
     def test_capabilities_hashes_and_excluded_fixtures(self):
@@ -49,7 +53,7 @@ class ProviderSyncTest(unittest.TestCase):
         self.write(self.local["market"], "providers/directory/config.yaml", 'id: directory\nname: Directory\nversion: "1"\nsupported_markets: [HK]\nsymbol_directory: {market: HK_STOCK}\n')
         self.write(self.local["market"], "candidates/ignored/config.yaml", "ignored")
         self.write(self.local["import"], "providers/sample/fixtures/private.csv", "ignored")
-        files, _, count = collect(self.local)
+        files, count = build_release(read_sources(self.local))
         self.assertEqual(count, 4)
         items = {item["id"]: item for item in json.loads(files["manifest.json"])["items"]}
         self.assertEqual(items["mixed"]["capabilities"], ["market_data", "stock_directory"])
@@ -63,9 +67,20 @@ class ProviderSyncTest(unittest.TestCase):
         quote = self.quote("1").replace("sample-quote", "bad")
         self.write(self.local["market"], path, quote + "  headers: {Authorization: secret}\n")
         with self.assertRaisesRegex(ValueError, "invalid or unsafe"):
-            collect(self.local)
+            read_sources(self.local)
         self.write(self.local["market"], path, quote + "  headers: {Authorization: 'Bearer ${TOKEN}'}\n")
-        self.assertEqual(collect(self.local)[2], 3)
+        self.assertEqual(len(read_sources(self.local)), 3)
         self.write(self.local["market"], path, self.quote("1"))
         with self.assertRaisesRegex(ValueError, "duplicate provider ID"):
-            collect(self.local)
+            build_release(read_sources(self.local))
+
+    def test_excludes_xuangubao_by_path_or_id_from_local_and_remote(self):
+        for roots in (self.local, self.remote):
+            self.write(roots["market"], "providers/xuangubao/config.yaml", "invalid ignored data")
+            self.write(roots["market"], "providers/renamed/config.yaml", self.quote("1").replace("sample-quote", "XuanGuBao"))
+        previous = self.write(self.release, "v1/market-xuangubao.yaml", "previously published")
+        sync(self.release, self.local, False)
+        sync(self.release, self.remote, True)
+        self.assertFalse(previous.exists())
+        manifest = json.loads((self.release / "v1/manifest.json").read_bytes())
+        self.assertEqual(len(manifest["items"]), 2)

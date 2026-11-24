@@ -1,22 +1,9 @@
 {
-  "import/providers/binance-spot/template.json": "2da1409c86c6372bad7a81e7348452a7543e1e5c67cb3041747ded983b9bfd29",
-  "import/providers/ctp-settlement-csv-v1/template.json": "93578070837598045bbb13d509b07b787fc4dda2bcbdda031cb250c4e4ee2bc9",
-  "import/providers/ths/template.json": "3a0d0d85cb6ffa75390bbc210831d4b7d6c66170aeca92aa3ca87a307b930f50",
-  "market/providers/binance-coinm/config.yaml": "b495717fb657f5e411bc4eae7328154ccd34f11b834b4aaba52b8899d23f89b0",
-  "market/providers/binance-usdm/config.yaml": "be9ffb4fec911f74167f476d274f16ee284b830a79ec6251b74834a9d4227d4f",
-  "market/providers/binance/config.yaml": "6e1edd94b6af76fda201f59425eed16364162de496dbb32cc97a946136ac7207",
   "market/providers/eastmoney-cn-catalog/config.yaml": "1c90c4e2cf5331b3c7b8d3f201c4891f78af0774c6f169dd11eeedcdef429764",
   "market/providers/hithink/config.yaml": "6e6600bf4eb316e81e01ee0387bab0afa6206208af3d8dbfc16e5e02326342e1",
   "market/providers/hkex-hk-catalog/config.yaml": "eecd6de33f380dd37bc759c567e38458fb4700a4b6765fcde4c2e8dabbd8c43d",
   "market/providers/nasdaq-trader-us-catalog/config.yaml": "0f0bf1910dced2bbee635854ac7ca27f2b09fb6ddb9e4dced85cb30c43886ec1",
-  "market/providers/okx-derivatives/config.yaml": "cfaf12d3bb53b9dfccbaad079a3b9d1101df991406c62802e7505422a314d273",
-  "market/providers/okx/config.yaml": "e6074017a5e4a5a54d35fb6d07dce6d551545b60705e006d08a60323de966ba4",
-  "market/providers/sina-hk/config.yaml": "bb1e533c48875c3b645dce680096b52998d3b9c0db8580fe0264288d6f2e33ea",
-  "market/providers/sina-us/config.yaml": "d80232a91308d15678be31237d18d59d7eb4084e7f8b4c8bedb57394c498b315",
   "market/providers/sina/config.yaml": "669e34046dcfc5f6104e92412c772254a99f2ce7c152a683c3299a3c05e2ad9a",
   "market/providers/tencent/config.yaml": "cea6fed097b47e8ec7bb8c274012a9c51750c5255c14b509eb75f95db7698f4b",
-  "market/providers/tushare-hk/config.yaml": "5d3b66fa760aba94e762d1371503731cdfd09d03153185ac76d76862d72567aa",
-  "market/providers/tushare-us/config.yaml": "3179f91e99f69d04a0286e17ab1984363aaaed3ae7540a770f3481a4d7640503",
-  "market/providers/tushare/config.yaml": "f478c4cd692934d4b53b55b7173399fa47fe154178da8b42f0b8665fbe369605",
-  "market/providers/xuangubao/config.yaml": "f2ca975961d41b3dc9e5bee9bc40b9d2ca8395a4faa468de03882cae0af3b091"
+  "market/providers/tushare/config.yaml": "f478c4cd692934d4b53b55b7173399fa47fe154178da8b42f0b8665fbe369605"
 }

@@ -252,23 +252,10 @@
       "name": "Tushare Pro 美股",
       "sha256": "3179f91e99f69d04a0286e17ab1984363aaaed3ae7540a770f3481a4d7640503",
       "version": "1.0.0"
-    },
-    {
-      "capabilities": [
-        "market_data"
-      ],
-      "file": "market-xuangubao.yaml",
-      "id": "xuangubao",
-      "markets": [
-        "CN"
-      ],
-      "name": "选股宝",
-      "sha256": "f2ca975961d41b3dc9e5bee9bc40b9d2ca8395a4faa468de03882cae0af3b091",
-      "version": "1.2.0"
     }
   ],
   "max_protocol": 1,
   "min_protocol": 1,
-  "release": "providers-cde17f969f1515e1",
+  "release": "providers-fc6e496fba5be02a",
   "schema": 1
 }

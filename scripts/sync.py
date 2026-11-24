@@ -13,6 +13,8 @@ SENSITIVE = re.compile(r"^(?:authorization|proxy[-_]authorization|cookie|set[-_]
 PLACEHOLDER = re.compile(r"(?:Bearer )?\$\{[A-Z_][A-Z0-9_]*\}")
 SECRET = re.compile(rb"-----BEGIN [A-Z ]*PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[A-Z0-9]{16}")
 SOURCES = {"import": "template.json", "market": "config.yaml"}
+EXCLUDED_SOURCES = {"market/providers/xuangubao/config.yaml"}
+EXCLUDED_IDS = {"xuangubao"}
 
 
 def unique_mapping(pairs):
@@ -120,8 +122,8 @@ def load_source(path, kind):
     return item, data
 
 
-def collect(roots):
-    catalog, files, fingerprints = {}, {}, {}
+def read_sources(roots):
+    entries = {}
     for kind, filename in SOURCES.items():
         root = roots[kind]
         directory = root / "providers"
@@ -132,39 +134,71 @@ def collect(roots):
             raise ValueError(f"no {kind} providers found")
         for path in paths:
             source = f"{kind}/{path.relative_to(root).as_posix()}"
+            if source.casefold() in EXCLUDED_SOURCES:
+                continue
             try:
                 item, data = load_source(path, kind)
             except (ValueError, KeyError, TypeError, AttributeError, yaml.YAMLError) as error:
                 raise ValueError(f"{source}: invalid or unsafe configuration ({type(error).__name__})") from None
-            key = item["id"].lower()
-            if key in catalog:
-                raise ValueError(f"{source}: duplicate provider ID")
-            catalog[key] = item
-            files[item["file"]] = data
-            fingerprints[source] = item["sha256"]
+            if item["id"].casefold() not in EXCLUDED_IDS:
+                entries[source] = item, data
+    return entries
+
+
+def build_release(entries):
+    catalog, files = {}, {}
+    for source, (item, data) in entries.items():
+        key = item["id"].casefold()
+        if key in catalog:
+            raise ValueError(f"{source}: duplicate provider ID")
+        catalog[key] = item
+        files[item["file"]] = data
     items = [catalog[key] for key in sorted(catalog)]
     manifest = {"schema": 1, "release": f"providers-{sha256(json_bytes(items))[:16]}", "min_protocol": 1, "max_protocol": 1, "items": items}
     files["manifest.json"] = json_bytes(manifest)
     if len(items) > 100 or len(files["manifest.json"]) > 128 << 10:
         raise ValueError("catalog exceeds the desktop protocol limit")
-    return files, fingerprints, len(items)
+    return files, len(items)
+
+
+def preserve_pending(release, entries, pending):
+    previous = json.loads((release / "manifest.json").read_bytes())
+    by_digest = {item["sha256"]: item for item in previous["items"]}
+    remaining = {}
+    for source, digest in pending.items():
+        if source.casefold() in EXCLUDED_SOURCES:
+            continue
+        if source in entries and entries[source][0]["sha256"] == digest:
+            continue
+        item = by_digest[digest]
+        if item["id"].casefold() in EXCLUDED_IDS:
+            continue
+        path = release / item["file"]
+        data = path.read_bytes()
+        if sha256(data) != digest:
+            raise ValueError(f"{source}: stored local snapshot does not match recorded digest")
+        entries[source] = item, data
+        remaining[source] = digest
+    if remaining:
+        print(f"Kept {len(remaining)} local configurations while upstream catches up.")
+    return remaining
 
 
 def sync(root, roots, upstream):
-    files, fingerprints, count = collect(roots)
+    entries = read_sources(roots)
     handoff = root / "upstream-pending.json"
-    if upstream and handoff.exists():
-        pending = json.loads(handoff.read_bytes())
-        if any(fingerprints.get(path) != digest for path, digest in pending.items()):
-            print("Upstream has not caught up with the local snapshot; keeping the existing release.")
-            return False
+    release = root / "v1"
+    if upstream:
+        pending = preserve_pending(release, entries, json.loads(handoff.read_bytes())) if handoff.exists() else {}
+    else:
+        pending = {source: item["sha256"] for source, (item, _) in entries.items()}
+    files, count = build_release(entries)
     license_file = roots["market"] / "LICENSE"
     if license_file.is_symlink() or not license_file.is_file():
         raise ValueError("missing market-provider license")
     license_text = license_file.read_bytes()
     if not license_text or len(license_text) > 65536 or SECRET.search(license_text):
         raise ValueError("invalid market-provider license")
-    release = root / "v1"
     release.mkdir(exist_ok=True)
     for previous in release.iterdir():
         if previous.is_symlink() or not previous.is_file() or not re.fullmatch(r"manifest\.json|(?:import|market)-[A-Za-z0-9_-]+\.(?:json|yaml)", previous.name):
@@ -175,12 +209,11 @@ def sync(root, roots, upstream):
         if previous.name not in files:
             previous.unlink()
     (root / "MARKET-PROVIDERS-LICENSE.txt").write_bytes(license_text)
-    if upstream:
-        handoff.unlink(missing_ok=True)
+    if pending:
+        handoff.write_bytes(json_bytes(pending))
     else:
-        handoff.write_bytes(json_bytes(fingerprints))
+        handoff.unlink(missing_ok=True)
     print(f"Generated {count} configurations; manifest SHA-256: {sha256(files['manifest.json'])}")
-    return True
 
 
 def main():
