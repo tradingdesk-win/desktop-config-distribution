@@ -1,0 +1,59 @@
+name: Sync provider configurations
+
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: provider-sync
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Validate sync tooling
+        run: |
+          python -m pip install -r requirements.txt
+          python -B -m unittest discover -s scripts
+      - name: Read public source repositories
+        run: |
+          git clone --quiet --depth=1 --branch main https://github.com/tradingdesk-win/import-data-providers.git "$RUNNER_TEMP/import-providers"
+          git clone --quiet --depth=1 --branch main https://github.com/tradingdesk-win/market-data-providers.git "$RUNNER_TEMP/market-providers"
+      - name: Generate and publish release
+        run: |
+          python -B scripts/sync.py --upstream --import-repo "$RUNNER_TEMP/import-providers" --market-repo "$RUNNER_TEMP/market-providers"
+          git add -A -- v1 MARKET-PROVIDERS-LICENSE.txt
+          if git ls-files --error-unmatch upstream-pending.json >/dev/null 2>&1; then
+            git add -u -- upstream-pending.json
+          fi
+          git diff --cached --check
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            imports=$(git -C "$RUNNER_TEMP/import-providers" rev-parse HEAD)
+            markets=$(git -C "$RUNNER_TEMP/market-providers" rev-parse HEAD)
+            git commit -m 'Sync provider configurations' -m "import-data-providers: $imports" -m "market-data-providers: $markets"
+            git push origin HEAD:main
+          fi
+      - name: Show verified console values
+        run: |
+          release=$(git log -1 --format=%H -- v1)
+          base="https://raw.githubusercontent.com/tradingdesk-win/desktop-config-distribution/$release/v1"
+          status_code=$(curl --silent --show-error --fail --retry 4 --max-time 15 --output "$RUNNER_TEMP/manifest.json" --write-out '%{http_code}' "$base/manifest.json")
+          test "$status_code" = 200
+          cmp v1/manifest.json "$RUNNER_TEMP/manifest.json"
+          digest=$(sha256sum "$RUNNER_TEMP/manifest.json" | cut -d' ' -f1)
+          printf '### Desktop configuration policy\n\n- Primary HTTPS address: `%s`\n- Manifest SHA-256: `%s`\n' "$base" "$digest" >> "$GITHUB_STEP_SUMMARY"

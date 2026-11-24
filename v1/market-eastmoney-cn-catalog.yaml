@@ -1,0 +1,41 @@
+id: eastmoney-cn-catalog
+name: 东方财富沪深京股票名录
+description: 同步上交所（含科创板）、深交所和北交所的股票代码与名称
+version: 1.1.0
+enabled: false
+supported_markets: [CN]
+supported_types: [STOCK]
+api:
+  base_url: https://push2.eastmoney.com
+  timeout: 15s
+response:
+  format: json
+symbol_directory:
+  market: CN_STOCK
+  catalog:
+    request:
+      method: GET
+      endpoint: /webguest/api/qt/clist/get
+      params:
+        pn: '{{page}}'
+        pz: '{{limit}}'
+        np: '1'
+        fltt: '2'
+        invt: '2'
+        fid: f12
+        po: '1'
+        fs: 'm:0+t:6,m:0+t:80,m:1+t:2,m:1+t:23,m:0+t:81+s:2048'
+        fields: f12,f14,f19
+    rows_path: data.diff
+    code_path: f12
+    name_path: f14
+    exchange_path: f19
+    exchange_values:
+      '2': SSE
+      '6': SZSE
+      '23': SSE
+      '80': SZSE
+      '81': BSE
+    total_path: data.total
+    page_size: 100
+    max_pages: 200

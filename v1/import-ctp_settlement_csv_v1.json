@@ -1,0 +1,198 @@
+{
+  "version": "5.0",
+  "export_at": "",
+  "template": {
+    "template_id": "ctp_settlement_csv_v1",
+    "name": "CTP 成交/分节 CSV v1（实验） / Fills and Sectioned CSV (experimental)",
+    "description": "支持显式字段映射的纯成交CSV，以及带 [CTP_SETTLEMENT_CSV_V1] 签名的分节CSV；资金/结算/持仓汇总仅保留原件。未验收真实券商变体，公开合约入账尚未启用。",
+    "type": "broker",
+    "supported_markets": [
+      "CN"
+    ],
+    "is_builtin": false,
+    "is_enabled": true,
+    "parser": "ctp_settlement_csv_v1",
+    "extensions": [
+      ".csv"
+    ],
+    "encoding": [
+      "utf-8",
+      "gb18030",
+      "gbk"
+    ],
+    "delimiter": ",",
+    "has_header": true,
+    "skip_rows": 0,
+    "date_formats": [
+      "2006-01-02"
+    ],
+    "time_formats": [
+      "15:04:05"
+    ],
+    "field_rules": [
+      {
+        "target": "date",
+        "sources": [
+          "日期"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "string"
+      },
+      {
+        "target": "time",
+        "sources": [
+          "时间"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "string"
+      },
+      {
+        "target": "trading_day",
+        "sources": [
+          "交易日"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "string"
+      },
+      {
+        "target": "contract_code",
+        "sources": [
+          "合约"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "string"
+      },
+      {
+        "target": "side",
+        "sources": [
+          "买卖"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "string",
+        "value_mapping": {
+          "买": "BUY",
+          "卖": "SELL"
+        }
+      },
+      {
+        "target": "position_effect",
+        "sources": [
+          "开平"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "string",
+        "value_mapping": {
+          "开": "OPEN",
+          "平": "CLOSE",
+          "平今": "CLOSE_TODAY"
+        }
+      },
+      {
+        "target": "position_side",
+        "sources": [
+          "持仓方向"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "string",
+        "value_mapping": {
+          "多": "LONG",
+          "空": "SHORT"
+        }
+      },
+      {
+        "target": "quantity",
+        "sources": [
+          "手数"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "float"
+      },
+      {
+        "target": "price",
+        "sources": [
+          "成交价"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "float"
+      },
+      {
+        "target": "amount",
+        "sources": [
+          "成交额"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "float"
+      },
+      {
+        "target": "commission",
+        "sources": [
+          "手续费"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "float"
+      },
+      {
+        "target": "fee_asset",
+        "sources": [
+          "费用币种"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "string"
+      },
+      {
+        "target": "trade_number",
+        "sources": [
+          "成交编号"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "string"
+      },
+      {
+        "target": "external_account",
+        "sources": [
+          "投资者"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "string"
+      },
+      {
+        "target": "exchange",
+        "sources": [
+          "交易所"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "string"
+      }
+    ]
+  }
+}

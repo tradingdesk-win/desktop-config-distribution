@@ -1,7 +1,274 @@
 {
-  "schema": 1,
-  "release": "bootstrap-v1",
-  "min_protocol": 1,
+  "items": [
+    {
+      "capabilities": [
+        "market_data"
+      ],
+      "file": "market-binance.yaml",
+      "id": "binance",
+      "markets": [
+        "CRYPTO"
+      ],
+      "name": "Binance Spot",
+      "sha256": "6e1edd94b6af76fda201f59425eed16364162de496dbb32cc97a946136ac7207",
+      "version": "1.2.0"
+    },
+    {
+      "capabilities": [
+        "market_data"
+      ],
+      "file": "market-binance-coinm.yaml",
+      "id": "binance-coinm",
+      "markets": [
+        "CRYPTO"
+      ],
+      "name": "Binance COIN-M Futures",
+      "sha256": "b495717fb657f5e411bc4eae7328154ccd34f11b834b4aaba52b8899d23f89b0",
+      "version": "1.0.0"
+    },
+    {
+      "capabilities": [
+        "market_data"
+      ],
+      "file": "market-binance-usdm.yaml",
+      "id": "binance-usdm",
+      "markets": [
+        "CRYPTO"
+      ],
+      "name": "Binance USDⓈ-M Futures",
+      "sha256": "be9ffb4fec911f74167f476d274f16ee284b830a79ec6251b74834a9d4227d4f",
+      "version": "1.0.0"
+    },
+    {
+      "broker": "币安",
+      "capabilities": [
+        "template"
+      ],
+      "file": "import-binance_spot.json",
+      "id": "binance_spot",
+      "markets": [
+        "CRYPTO"
+      ],
+      "name": "币安",
+      "sha256": "2da1409c86c6372bad7a81e7348452a7543e1e5c67cb3041747ded983b9bfd29",
+      "version": "3.0"
+    },
+    {
+      "broker": "CTP 成交/分节 CSV v1（实验） / Fills and Sectioned CSV (experimental)",
+      "capabilities": [
+        "template"
+      ],
+      "file": "import-ctp_settlement_csv_v1.json",
+      "id": "ctp_settlement_csv_v1",
+      "markets": [
+        "CN"
+      ],
+      "name": "CTP 成交/分节 CSV v1（实验） / Fills and Sectioned CSV (experimental)",
+      "sha256": "93578070837598045bbb13d509b07b787fc4dda2bcbdda031cb250c4e4ee2bc9",
+      "version": "5.0"
+    },
+    {
+      "capabilities": [
+        "stock_directory"
+      ],
+      "file": "market-eastmoney-cn-catalog.yaml",
+      "id": "eastmoney-cn-catalog",
+      "markets": [
+        "CN"
+      ],
+      "name": "东方财富沪深京股票名录",
+      "sha256": "1c90c4e2cf5331b3c7b8d3f201c4891f78af0774c6f169dd11eeedcdef429764",
+      "version": "1.1.0"
+    },
+    {
+      "capabilities": [
+        "market_data"
+      ],
+      "file": "market-hithink.yaml",
+      "id": "hithink",
+      "markets": [
+        "CN"
+      ],
+      "name": "同花顺 iFinD",
+      "sha256": "6e6600bf4eb316e81e01ee0387bab0afa6206208af3d8dbfc16e5e02326342e1",
+      "version": "1.2.2"
+    },
+    {
+      "capabilities": [
+        "stock_directory"
+      ],
+      "file": "market-hkex-hk-catalog.yaml",
+      "id": "hkex-hk-catalog",
+      "markets": [
+        "HK"
+      ],
+      "name": "香港交易所证券名录 / HKEX Securities Directory",
+      "sha256": "eecd6de33f380dd37bc759c567e38458fb4700a4b6765fcde4c2e8dabbd8c43d",
+      "version": "1.0.0"
+    },
+    {
+      "capabilities": [
+        "stock_directory"
+      ],
+      "file": "market-nasdaq-trader-us-catalog.yaml",
+      "id": "nasdaq-trader-us-catalog",
+      "markets": [
+        "US"
+      ],
+      "name": "Nasdaq Trader US Symbol Directory",
+      "sha256": "0f0bf1910dced2bbee635854ac7ca27f2b09fb6ddb9e4dced85cb30c43886ec1",
+      "version": "1.0.0"
+    },
+    {
+      "capabilities": [
+        "market_data"
+      ],
+      "file": "market-okx.yaml",
+      "id": "okx",
+      "markets": [
+        "CRYPTO"
+      ],
+      "name": "OKX Spot",
+      "sha256": "e6074017a5e4a5a54d35fb6d07dce6d551545b60705e006d08a60323de966ba4",
+      "version": "1.0.0"
+    },
+    {
+      "capabilities": [
+        "market_data"
+      ],
+      "file": "market-okx-derivatives.yaml",
+      "id": "okx-derivatives",
+      "markets": [
+        "CRYPTO"
+      ],
+      "name": "OKX Derivatives",
+      "sha256": "cfaf12d3bb53b9dfccbaad079a3b9d1101df991406c62802e7505422a314d273",
+      "version": "1.0.0"
+    },
+    {
+      "capabilities": [
+        "market_data",
+        "stock_directory"
+      ],
+      "file": "market-sina.yaml",
+      "id": "sina",
+      "markets": [
+        "CN"
+      ],
+      "name": "新浪财经",
+      "sha256": "669e34046dcfc5f6104e92412c772254a99f2ce7c152a683c3299a3c05e2ad9a",
+      "version": "1.3.0"
+    },
+    {
+      "capabilities": [
+        "market_data"
+      ],
+      "file": "market-sina-hk.yaml",
+      "id": "sina-hk",
+      "markets": [
+        "HK"
+      ],
+      "name": "新浪财经港股实时",
+      "sha256": "bb1e533c48875c3b645dce680096b52998d3b9c0db8580fe0264288d6f2e33ea",
+      "version": "1.0.1"
+    },
+    {
+      "capabilities": [
+        "market_data"
+      ],
+      "file": "market-sina-us.yaml",
+      "id": "sina-us",
+      "markets": [
+        "US"
+      ],
+      "name": "新浪财经美股实时",
+      "sha256": "d80232a91308d15678be31237d18d59d7eb4084e7f8b4c8bedb57394c498b315",
+      "version": "1.0.1"
+    },
+    {
+      "capabilities": [
+        "market_data"
+      ],
+      "file": "market-tencent.yaml",
+      "id": "tencent",
+      "markets": [
+        "CN",
+        "HK",
+        "US"
+      ],
+      "name": "腾讯财经",
+      "sha256": "cea6fed097b47e8ec7bb8c274012a9c51750c5255c14b509eb75f95db7698f4b",
+      "version": "1.3.1"
+    },
+    {
+      "broker": "同花顺交割单 / THS Settlement",
+      "capabilities": [
+        "template"
+      ],
+      "file": "import-ths_settlement.json",
+      "id": "ths_settlement",
+      "markets": [
+        "CN"
+      ],
+      "name": "同花顺交割单 / THS Settlement",
+      "sha256": "3a0d0d85cb6ffa75390bbc210831d4b7d6c66170aeca92aa3ca87a307b930f50",
+      "version": "1.0"
+    },
+    {
+      "capabilities": [
+        "market_data"
+      ],
+      "file": "market-tushare.yaml",
+      "id": "tushare",
+      "markets": [
+        "CN"
+      ],
+      "name": "Tushare",
+      "sha256": "f478c4cd692934d4b53b55b7173399fa47fe154178da8b42f0b8665fbe369605",
+      "version": "1.1.1"
+    },
+    {
+      "capabilities": [
+        "market_data"
+      ],
+      "file": "market-tushare-hk.yaml",
+      "id": "tushare-hk",
+      "markets": [
+        "HK"
+      ],
+      "name": "Tushare Pro 港股",
+      "sha256": "5d3b66fa760aba94e762d1371503731cdfd09d03153185ac76d76862d72567aa",
+      "version": "1.0.0"
+    },
+    {
+      "capabilities": [
+        "market_data"
+      ],
+      "file": "market-tushare-us.yaml",
+      "id": "tushare-us",
+      "markets": [
+        "US"
+      ],
+      "name": "Tushare Pro 美股",
+      "sha256": "3179f91e99f69d04a0286e17ab1984363aaaed3ae7540a770f3481a4d7640503",
+      "version": "1.0.0"
+    },
+    {
+      "capabilities": [
+        "market_data"
+      ],
+      "file": "market-xuangubao.yaml",
+      "id": "xuangubao",
+      "markets": [
+        "CN"
+      ],
+      "name": "选股宝",
+      "sha256": "f2ca975961d41b3dc9e5bee9bc40b9d2ca8395a4faa468de03882cae0af3b091",
+      "version": "1.2.0"
+    }
+  ],
   "max_protocol": 1,
-  "items": []
+  "min_protocol": 1,
+  "release": "providers-cde17f969f1515e1",
+  "schema": 1
 }

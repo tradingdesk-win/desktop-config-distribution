@@ -1,0 +1,20 @@
+id: hkex-hk-catalog
+name: 香港交易所证券名录 / HKEX Securities Directory
+description: 港交所挂牌股票、ETF 与 REIT 的证券代码和名称
+version: 1.0.0
+enabled: false
+supported_markets: [HK]
+supported_types: [STOCK]
+api:
+  base_url: https://www.hkex.com.hk
+  timeout: 30s
+  headers:
+    Accept: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+response: {}
+symbol_directory:
+  market: HK_STOCK
+  catalog:
+    format: hkex_xlsx
+    request:
+      method: GET
+      endpoint: https://www.hkex.com.hk/eng/services/trading/securities/securitieslists/ListOfSecurities.xlsx

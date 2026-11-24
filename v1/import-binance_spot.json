@@ -1,0 +1,681 @@
+{
+  "version": "4.0",
+  "export_at": "",
+  "template": {
+    "id": 0,
+    "template_id": "binance_spot",
+    "name": "币安",
+    "description": "自动识别币安现货成交、交易历史、订单历史及资金流水；首次优先交易历史，流水补充资产事件和核对，API用于后续增量。",
+    "type": "exchange",
+    "supported_markets": [
+      "CRYPTO"
+    ],
+    "is_builtin": false,
+    "is_enabled": true,
+    "parser": "csv",
+    "extensions": [
+      ".csv",
+      ".xlsx",
+      ".xls"
+    ],
+    "encoding": [
+      "utf-8"
+    ],
+    "delimiter": ",",
+    "has_header": true,
+    "skip_rows": 0,
+    "date_formats": [
+      "2006-01-02 15:04:05",
+      "2006-01-02T15:04:05Z07:00"
+    ],
+    "time_formats": null,
+    "field_rules": [
+      {
+        "target": "date",
+        "sources": [
+          "Date(UTC)",
+          "Date",
+          "Time",
+          "成交时间",
+          "时间",
+          "成交日期",
+          "Date/Time",
+          "executedAtMs"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": true,
+        "value_type": "string"
+      },
+      {
+        "target": "symbol",
+        "sources": [
+          "Pair",
+          "Trading Pair",
+          "Symbol",
+          "Market",
+          "交易对",
+          "交易对名称",
+          "symbol"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": true,
+        "value_type": "string"
+      },
+      {
+        "target": "business_type",
+        "sources": [
+          "Side",
+          "Type",
+          "方向",
+          "买卖方向",
+          "买卖",
+          "买",
+          "卖",
+          "side"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": true,
+        "value_type": "string",
+        "value_mapping": {
+          "买": "BUY",
+          "卖": "SELL",
+          "买入": "BUY",
+          "卖出": "SELL"
+        }
+      },
+      {
+        "target": "price",
+        "sources": [
+          "Price",
+          "价格",
+          "成交价格",
+          "成交均价",
+          "price"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": true,
+        "value_type": "string"
+      },
+      {
+        "target": "quantity",
+        "sources": [
+          "Executed",
+          "Executed Quantity",
+          "Quantity",
+          "Qty",
+          "数量",
+          "成交数量",
+          "完全成交数量",
+          "完全成交",
+          "Executed Qty",
+          "quantity"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": true,
+        "value_type": "string"
+      },
+      {
+        "target": "amount",
+        "sources": [
+          "Amount",
+          "Total",
+          "QuoteQty",
+          "Quote Quantity",
+          "Trade Amount",
+          "成交金额",
+          "成交额",
+          "quoteQuantity",
+          "总计"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": false,
+        "value_type": "string"
+      },
+      {
+        "target": "commission",
+        "sources": [
+          "Fee",
+          "Commission",
+          "手续费",
+          "手续费数量",
+          "Commission Amount",
+          "commission"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": false,
+        "value_type": "string"
+      },
+      {
+        "target": "fee_asset",
+        "sources": [
+          "Fee Asset",
+          "Fee Currency",
+          "Commission Asset",
+          "手续费币种",
+          "手续费资产",
+          "Commission Currency",
+          "commissionAsset"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": false,
+        "value_type": "string"
+      },
+      {
+        "target": "external_fill_id",
+        "sources": [
+          "Trade ID",
+          "TradeId",
+          "Fill ID",
+          "成交ID",
+          "成交编号",
+          "externalFillId",
+          "tradeId"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": false,
+        "value_type": "string"
+      },
+      {
+        "target": "external_order_id",
+        "sources": [
+          "Order ID",
+          "OrderId",
+          "订单ID",
+          "订单编号",
+          "externalOrderId",
+          "orderId"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": false,
+        "value_type": "string"
+      },
+      {
+        "target": "external_account_id",
+        "sources": [
+          "UID",
+          "Account ID",
+          "钱包UID",
+          "externalAccountId"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": false,
+        "value_type": "string"
+      },
+      {
+        "target": "base_asset",
+        "sources": [
+          "Base Asset",
+          "基础币",
+          "baseAsset"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": false,
+        "value_type": "string"
+      },
+      {
+        "target": "quote_asset",
+        "sources": [
+          "Quote Asset",
+          "计价币",
+          "quoteAsset"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": false,
+        "value_type": "string"
+      },
+      {
+        "target": "maker",
+        "sources": [
+          "Maker",
+          "IsMaker",
+          "maker"
+        ],
+        "match_type": "exact",
+        "priority": 0,
+        "required": false,
+        "value_type": "string"
+      }
+    ],
+    "formats": [
+      {
+        "id": "spot_fills",
+        "kind": "SPOT_FILLS"
+      },
+      {
+        "id": "trade_history",
+        "kind": "TRADE_HISTORY",
+        "required_headers": [
+          "订单编号",
+          "手续费",
+          "已执行",
+          "交易对"
+        ],
+        "field_rules": [
+          {
+            "target": "date",
+            "sources": [
+              "时间"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "external_order_id",
+            "sources": [
+              "订单编号"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "symbol",
+            "sources": [
+              "交易对"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "business_type",
+            "sources": [
+              "方向"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "price",
+            "sources": [
+              "价格"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "quantity",
+            "sources": [
+              "已执行"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "amount",
+            "sources": [
+              "金额"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "commission",
+            "sources": [
+              "手续费"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "source_trade_row",
+            "sources": [
+              "订单编号"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": false,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          }
+        ]
+      },
+      {
+        "id": "order_history",
+        "kind": "ORDER_HISTORY",
+        "required_headers": [
+          "订单号",
+          "已执行²",
+          "平均价格",
+          "交易总额³",
+          "状态"
+        ],
+        "field_rules": [
+          {
+            "target": "order_date",
+            "sources": [
+              "时间"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "date",
+            "sources": [
+              "时间"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 1,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "external_order_id",
+            "sources": [
+              "订单号"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 1,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "symbol",
+            "sources": [
+              "交易对"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 1,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "business_type",
+            "sources": [
+              "方向"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 1,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "price",
+            "sources": [
+              "平均价格"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 1,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "quantity",
+            "sources": [
+              "已执行²"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 1,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "amount",
+            "sources": [
+              "交易总额³"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 1,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "order_status",
+            "sources": [
+              "状态"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 1,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          }
+        ]
+      },
+      {
+        "id": "account_statement",
+        "kind": "ACCOUNT_STATEMENT",
+        "required_headers": [
+          "User_ID",
+          "UTC_Time",
+          "Account",
+          "Operation",
+          "Coin",
+          "Change",
+          "Remark"
+        ],
+        "field_rules": [
+          {
+            "target": "external_account_id",
+            "sources": [
+              "User_ID"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "date",
+            "sources": [
+              "UTC_Time"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "wallet",
+            "sources": [
+              "Account"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "operation",
+            "sources": [
+              "Operation"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "asset",
+            "sources": [
+              "Coin"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "change",
+            "sources": [
+              "Change"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          },
+          {
+            "target": "remark",
+            "sources": [
+              "Remark"
+            ],
+            "match_type": "exact",
+            "pattern": "",
+            "priority": 0,
+            "required": true,
+            "transform": "",
+            "value_type": "string",
+            "value_mapping": null
+          }
+        ],
+        "timezone": "UTC"
+      }
+    ],
+    "file_source": {
+      "version": 1,
+      "namespace": "binance:production",
+      "wallet_type": "SPOT",
+      "evidence_kinds": {
+        "ACCOUNT_STATEMENT": "BINANCE_ACCOUNT_STATEMENT",
+        "ORDER_HISTORY": "BINANCE_ORDER_HISTORY",
+        "STATEMENT_SUMMARY": "BINANCE_STATEMENT_SUMMARY",
+        "TRADE_HISTORY": "BINANCE_TRADE_HISTORY"
+      },
+      "wallet_values": [
+        "Spot"
+      ],
+      "operations": {
+        "Airdrop Assets": "DISTRIBUTION",
+        "Deposit": "DEPOSIT",
+        "Small Assets Exchange BNB": "CONVERT",
+        "Transaction Buy": "BUY_BASE",
+        "Transaction Fee": "TRADE_FEE",
+        "Transaction Revenue": "SELL_QUOTE",
+        "Transaction Sold": "SELL_BASE",
+        "Transaction Spend": "BUY_QUOTE",
+        "Transfer Between Spot and Funding": "TRANSFER",
+        "Transfer Between Spot and UM Futures": "TRANSFER",
+        "Withdraw": "WITHDRAWAL"
+      },
+      "trade_operation_prefix": "Transaction ",
+      "conversion_separator": " to ",
+      "dust_asset": "BNB",
+      "parity_currency": "USDT",
+      "parity_assets": [
+        "BUSD",
+        "FDUSD"
+      ],
+      "policy_description": "File accounting convention: BUSD=USDT and FDUSD=USDT 1:1; base fee uses fill.quoteQuantity/fill.quantity"
+    },
+    "source_version": "3.0",
+    "holding_handling": {
+      "version": 1,
+      "actions": [
+        "fee_consumption",
+        "conversion",
+        "balance_correction"
+      ],
+      "fee_asset_hints": [
+        "BNB"
+      ],
+      "conversion_hints": [
+        {
+          "from_asset": "BUSD",
+          "to_asset": "account_currency"
+        }
+      ]
+    },
+    "created_at": "0001-01-01T00:00:00Z",
+    "updated_at": "0001-01-01T00:00:00Z"
+  }
+}

@@ -1,0 +1,52 @@
+id: okx-derivatives
+name: OKX Derivatives
+description: Public historical OKX SWAP and FUTURES candles only.
+version: 1.0.0
+enabled: false
+supported_markets: [CRYPTO]
+supported_types: [CRYPTO_PERP, CRYPTO_DELIVERY]
+api:
+  base_url: https://www.okx.com
+  timeout: 15s
+  max_retry: 0
+  kline:
+    price_basis: UNKNOWN
+    endpoint: /api/v5/market/history-candles
+    method: GET
+    date_format: unix_ms
+    params:
+      instId: '{{contract}}'
+      bar: '{{period}}'
+      after: '{{endTimestamp}}'
+      before: '{{startTimestamp}}'
+      limit: '300'
+response:
+  format: json
+  kline:
+    data_path: data
+    row_format: array
+    field_mapping:
+      timestamp: {index: 0, type: time}
+      open_px: {index: 1, type: float}
+      high_px: {index: 2, type: float}
+      low_px: {index: 3, type: float}
+      close_px: {index: 4, type: float}
+period_mapping: {1m: 1m, 5m: 5m, 15m: 15m, 30m: 30m, 1h: 1H, 2h: 2H, 4h: 4H, 1d: 1Dutc}
+metadata:
+  derivative_market:
+    exchange: OKX
+    settlement_type: LINEAR
+    contract_pattern: '^[A-Z0-9]+-(?:USDT|USDC)-(?:SWAP|[0-9]{6})$'
+    expiry_format: '060102'
+    expiry_prefix: '-'
+    confirmation_index: 8
+    confirmed_value: '1'
+    volumes:
+      - {index: 5, unit: CONTRACTS}
+      - {index: 6, unit: BASE}
+      - {index: 7, unit: QUOTE}
+    documentation: https://www.okx.com/docs-v5/en/#order-book-trading-market-data-get-candlesticks-history
+limits:
+  max_data_points: 300
+  kline_pagination_directions: [older, newer]
+  supported_periods: [1m, 5m, 15m, 30m, 1h, 2h, 4h, 1d]

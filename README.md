@@ -5,11 +5,20 @@ This repository hosts the configuration files offered by TradingDesk's optional 
 - [import-data-providers](https://github.com/tradingdesk-win/import-data-providers): trade confirmation templates.
 - [market-data-providers](https://github.com/tradingdesk-win/market-data-providers): market-data and stock-directory configuration.
 
-The initial `v1/manifest.json` is empty. No provider configuration is available from this repository yet.
+Only formal `providers/*/template.json` and `providers/*/config.yaml` files are published. Candidates, examples, CSVs, fixtures, full directories, and account API adapters are excluded. Upstream maintainers must review configurations for redistribution and credentials before adding them to `providers/`. The included market provider license is copied from its source repository.
 
-## Publish a Batch
+## Automatic Synchronization
 
-1. Record the source commit and path for each approved file in the release commit description. Copy only approved JSON templates and YAML configurations into `v1/`, alongside `manifest.json`, without rewriting their contents. Do not include credentials, real statements, market-data snapshots, or stock-directory snapshots.
-2. Update `release` and add one manifest item per file. Each item has `id`, `name`, `version`, `markets`, `capabilities`, `file`, and `sha256`; templates also have `broker`. Use the configuration's actual ID, version, and markets. Use `template`, `market_data`, or `stock_directory` for capabilities. A YAML file with both market-data and stock-directory capabilities gets one entry. `file` is a plain filename, not a path or URL.
-3. Calculate each file's SHA-256 with `shasum -a 256 v1/<filename>` and insert it into the corresponding entry. Commit the files and manifest, then push. Use the full release commit SHA in the raw base URL: `https://raw.githubusercontent.com/tradingdesk-win/desktop-config-distribution/<commit-sha>/v1`.
-4. Verify that anonymous HTTPS requests to `<base>/manifest.json` and each `<base>/<filename>` return `200` without redirects. Compare the downloaded file digests with the manifest. Use the digest of the downloaded `manifest.json` as the admin console's **Manifest SHA-256**, and the base URL as **Primary HTTPS address**. Only configure fallbacks hosting identical bytes. Enable distribution only after an isolated desktop acceptance test passes.
+The **Sync provider configurations** GitHub Actions workflow checks both public `main` branches on a 15-minute schedule, or on demand via **Run workflow**. GitHub may delay scheduled runs. It validates the release, keeps files byte-for-byte, and commits only if generated files or handoff state change. No cross-repository token is needed; only the distribution repository is written.
+
+The first release uses the local source directories. While `upstream-pending.json` exists, automatic sync waits for both upstream repositories to publish every recorded provider file with the same content. This prevents older upstream versions from taking down or replacing locally reviewed configurations. If a pending file was edited again before its first upstream push, refresh the local snapshot with the command below. Do not delete the handoff file to bypass review.
+
+```sh
+python -m pip install -r requirements.txt
+python -B scripts/sync.py --import-repo ../import-data-providers --market-repo ../market-data-providers
+python -B -m unittest discover -s scripts
+```
+
+## Desktop Policy
+
+The workflow summary prints the verified **Primary HTTPS address** and **Manifest SHA-256**. The URL pins the full release commit and ends in `/v1`, not `/manifest.json`. Only configure fallback mirrors that serve identical bytes. Repository sync does not change the admin policy; promote each approved release with the new address and digest together. Enable distribution only after an isolated desktop acceptance test passes.

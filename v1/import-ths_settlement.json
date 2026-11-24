@@ -1,0 +1,264 @@
+{
+  "version": "5.0",
+  "export_at": "",
+  "template": {
+    "template_id": "ths_settlement",
+    "name": "同花顺交割单 / THS Settlement",
+    "description": "同花顺发生日期/证券名称交割单；自动按名称查询证券代码，申购及股份变动需复核。仅复盘成交，不生成融资负债。",
+    "type": "broker",
+    "supported_markets": [
+      "CN"
+    ],
+    "is_builtin": false,
+    "is_enabled": true,
+    "parser": "csv",
+    "extensions": [
+      ".csv"
+    ],
+    "encoding": [
+      "utf-8",
+      "gb18030",
+      "gbk"
+    ],
+    "delimiter": ",",
+    "has_header": true,
+    "skip_rows": 0,
+    "date_formats": [
+      "20060102",
+      "2006-01-02",
+      "2006/01/02"
+    ],
+    "time_formats": [],
+    "field_rules": [
+      {
+        "target": "date",
+        "sources": [
+          "发生日期"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "date"
+      },
+      {
+        "target": "symbol",
+        "sources": [
+          "证券代码"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": false,
+        "value_type": "string",
+        "transform": "resolve_by_name"
+      },
+      {
+        "target": "name",
+        "sources": [
+          "证券名称"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "string"
+      },
+      {
+        "target": "business_type",
+        "sources": [
+          "交易类别"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "string",
+        "value_mapping": {
+          "证券买入": "证券买入",
+          "证券卖出": "证券卖出",
+          "融资买入": "证券买入",
+          "股息入账": "红利入账",
+          "股息红利税补缴": "股息红利税补缴",
+          "申购配号": "INFO",
+          "新股申购确认缴款": "REVIEW",
+          "市值申购中签扣款回冲": "REVIEW",
+          "托管转出": "REVIEW",
+          "市值申购中签扣款": "REVIEW",
+          "交收资金冻结取消": "REVIEW",
+          "交收资金冻结": "REVIEW",
+          "市值申购中签": "REVIEW",
+          "新股入账": "REVIEW",
+          "红股入账": "REVIEW",
+          "配股入账": "REVIEW",
+          "配股缴款": "REVIEW",
+          "权证上账": "REVIEW"
+        }
+      },
+      {
+        "target": "price",
+        "sources": [
+          "成交均价"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "float"
+      },
+      {
+        "target": "quantity",
+        "sources": [
+          "发生数量"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "float",
+        "transform": "abs_trading"
+      },
+      {
+        "target": "amount",
+        "sources": [
+          "成交金额"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "float"
+      },
+      {
+        "target": "settlement_amount",
+        "sources": [
+          "发生金额"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "float"
+      },
+      {
+        "target": "balance",
+        "sources": [
+          "本次金额"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": false,
+        "value_type": "float"
+      },
+      {
+        "target": "commission",
+        "sources": [
+          "佣金"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "float"
+      },
+      {
+        "target": "stamp_tax",
+        "sources": [
+          "印花税"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "float"
+      },
+      {
+        "target": "transfer_fee",
+        "sources": [
+          "过户费"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "float"
+      },
+      {
+        "target": "other_fees",
+        "sources": [
+          "其他费用"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": true,
+        "value_type": "float"
+      },
+      {
+        "target": "trade_number",
+        "sources": [
+          "成交编号"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": false,
+        "value_type": "string"
+      },
+      {
+        "target": "currency",
+        "sources": [
+          "币种"
+        ],
+        "match_type": "exact",
+        "priority": 1,
+        "required": false,
+        "value_type": "string"
+      }
+    ],
+    "securities_events": {
+      "version": "ths-events-review-v1",
+      "sourceNamespace": "ths:settlement:cn",
+      "groupingStrategy": "THS_CLEARING_CHAIN_V1",
+      "relationBasis": "Unique same-name allotment anchor matched by exact quantity or cash amount within a 30-day source-date window; suggestion only, requires user confirmation.",
+      "businesses": {
+        "市值申购中签": {
+          "type": "SUBSCRIPTION",
+          "role": "ALLOTMENT"
+        },
+        "市值申购中签扣款": {
+          "type": "SUBSCRIPTION",
+          "role": "PAYMENT"
+        },
+        "新股申购确认缴款": {
+          "type": "SUBSCRIPTION",
+          "role": "PAYMENT"
+        },
+        "市值申购中签扣款回冲": {
+          "type": "SUBSCRIPTION",
+          "role": "REVERSAL"
+        },
+        "新股入账": {
+          "type": "SUBSCRIPTION",
+          "role": "AVAILABLE"
+        },
+        "配股缴款": {
+          "type": "ALLOTMENT",
+          "role": "PAYMENT"
+        },
+        "配股入账": {
+          "type": "ALLOTMENT",
+          "role": "AVAILABLE"
+        },
+        "红股入账": {
+          "type": "BONUS_SHARE",
+          "role": "BONUS"
+        },
+        "交收资金冻结": {
+          "type": "OTHER",
+          "role": "FREEZE"
+        },
+        "交收资金冻结取消": {
+          "type": "OTHER",
+          "role": "UNFREEZE"
+        },
+        "托管转出": {
+          "type": "CUSTODY",
+          "role": "CUSTODY"
+        },
+        "权证上账": {
+          "type": "RIGHTS",
+          "role": "RIGHTS"
+        }
+      }
+    },
+    "source_version": "1.0"
+  }
+}

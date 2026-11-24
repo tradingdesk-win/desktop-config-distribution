@@ -1,0 +1,28 @@
+id: nasdaq-trader-us-catalog
+name: Nasdaq Trader US Symbol Directory
+description: U.S. exchange-listed securities directory, including ETFs; no quotes or OTC coverage
+version: 1.0.0
+enabled: false
+supported_markets: [US]
+supported_types: [STOCK]
+api:
+  base_url: https://www.nasdaqtrader.com
+  timeout: 30s
+  headers:
+    Accept: text/plain
+response: {}
+symbol_directory:
+  market: US_STOCK
+  catalog:
+    format: nasdaq_trader
+    request:
+      method: GET
+      endpoint: https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqtraded.txt
+    exchange_values:
+      A: AMEX
+      F: TXSE
+      N: NYSE
+      P: NYSE_ARCA
+      Q: NASDAQ
+      V: IEX
+      Z: CBOE_BZX
