@@ -1,9 +1,0 @@
-{
-  "market/providers/eastmoney-cn-catalog/config.yaml": "1c90c4e2cf5331b3c7b8d3f201c4891f78af0774c6f169dd11eeedcdef429764",
-  "market/providers/hithink/config.yaml": "6e6600bf4eb316e81e01ee0387bab0afa6206208af3d8dbfc16e5e02326342e1",
-  "market/providers/hkex-hk-catalog/config.yaml": "eecd6de33f380dd37bc759c567e38458fb4700a4b6765fcde4c2e8dabbd8c43d",
-  "market/providers/nasdaq-trader-us-catalog/config.yaml": "0f0bf1910dced2bbee635854ac7ca27f2b09fb6ddb9e4dced85cb30c43886ec1",
-  "market/providers/sina/config.yaml": "669e34046dcfc5f6104e92412c772254a99f2ce7c152a683c3299a3c05e2ad9a",
-  "market/providers/tencent/config.yaml": "cea6fed097b47e8ec7bb8c274012a9c51750c5255c14b509eb75f95db7698f4b",
-  "market/providers/tushare/config.yaml": "f478c4cd692934d4b53b55b7173399fa47fe154178da8b42f0b8665fbe369605"
-}
